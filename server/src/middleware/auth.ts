@@ -1,17 +1,29 @@
-import type { RequestHandler } from 'express'
-import { verifyToken } from '../utils/jwt.js'
+import type { RequestHandler } from "express";
+import { jwtService } from "../external-services/jwt.js";
+import HttpStatusCode from "../utils/httpStatusCode.js";
 
 export const requireAuth: RequestHandler = (req, res, next) => {
-  const header = req.header('authorization')
-  if (!header?.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'Authentication required' })
-    return
+  const header = req.header("authorization");
+
+  if (!header?.startsWith("Bearer ")) {
+    res.status(HttpStatusCode.Unauthorized).json({
+      message: "Authentication required",
+    });
+    return;
   }
+
   try {
-    const { userId } = verifyToken(header.slice(7))
-    req.userId = userId
-    next()
+    const token = header.slice(7);
+
+    const { userId, email } = jwtService.verifyAccessToken(token);
+
+    req.userId = userId;
+    req.emailId = email;
+
+    next();
   } catch {
-    res.status(401).json({ message: 'Invalid or expired token' })
+    res.status(HttpStatusCode.Unauthorized).json({
+      message: "Invalid or expired access token",
+    });
   }
-}
+};

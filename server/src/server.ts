@@ -1,11 +1,18 @@
-import { app } from './app.js'
-import { connectDatabase } from './config/database.js'
-import { env } from './config/env.js'
+import { app } from "./app.js";
+import { connectDB } from "./config/database.js";
+import { env } from "./config/env.js";
 
-try {
-  await connectDatabase(env.MONGODB_URI)
-  app.listen(env.PORT, () => console.log(`API listening on port ${env.PORT}`))
-} catch (error) {
-  console.error('Failed to start server', error)
-  process.exit(1)
-}
+const startServer = async (): Promise<void> => {
+  try {
+    await connectDB();
+
+    app.listen(env.PORT, () => {
+      console.log(`API listening on port ${env.PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
