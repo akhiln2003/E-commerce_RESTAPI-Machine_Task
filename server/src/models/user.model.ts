@@ -1,3 +1,4 @@
+
 import mongoose, { Schema } from "mongoose";
 
 interface UserAttrs {
@@ -5,6 +6,7 @@ interface UserAttrs {
   email: string;
   password: string;
   role: "user" | "admin";
+  isBlocked: boolean;
 }
 
 interface UserDoc extends UserAttrs {
@@ -35,6 +37,10 @@ const userSchema = new Schema<UserDoc>(
       type: String,
       enum: ["user", "admin"],
       default: "user",
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
     },
   },
   {
