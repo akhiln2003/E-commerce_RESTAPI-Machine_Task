@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { authRouter } from "./routes/auth.routes.js";
+import { categoryRouter } from "./routes/category.routes.js";
 import HttpStatusCode from "./utils/httpStatusCode.js";
 
 export const app = express();
@@ -29,6 +30,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin/categories", categoryRouter);
 
 // 404 handler
 app.use((_req, res) => {

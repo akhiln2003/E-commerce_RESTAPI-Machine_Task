@@ -22,6 +22,9 @@ const Authpages = lazy(() => import("@/features/auth/pages/Authpages"));
 const UserManagement = lazy(
   () => import("@/features/admin/pages/UserManagement"),
 );
+const CategoryManagement = lazy(
+  () => import("@/features/admin/pages/CategoryManagement"),
+);
 const Profile = lazy(() => import("@/features/common/pages/Profile"));
 
 ////////////////////////--Admin side--/////////////////////
@@ -62,6 +65,16 @@ const routes = createBrowserRouter(
             <AdminProtected>
               <Suspense fallback={<div>Loading....</div>}>
                 <Profile />
+              </Suspense>
+            </AdminProtected>
+          ),
+        },
+        {
+          path: AdminUrls.categories,
+          element: (
+            <AdminProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <CategoryManagement />
               </Suspense>
             </AdminProtected>
           ),

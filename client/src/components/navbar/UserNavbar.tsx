@@ -10,10 +10,10 @@ const customerLinks: NavLinkItem[] = [
 ];
 
 const adminLinks: NavLinkItem[] = [
-  // { name: "Dashboard", url: AdminUrls.dashboard, end: true },
   { name: "Products", url: AdminUrls.products },
   { name: "Orders", url: AdminUrls.orders },
   { name: "Users", url: AdminUrls.userManagement },
+  { name: "Category", url: AdminUrls.categories },
 ];
 
 function UserNavbar() {

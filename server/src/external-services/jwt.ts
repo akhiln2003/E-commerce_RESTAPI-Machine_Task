@@ -73,6 +73,7 @@ export class JwtService {
       typeof decoded === "string" ||
       typeof decoded.userId !== "string" ||
       typeof decoded.email !== "string" ||
+      !["user", "admin"].includes(decoded.role as string) ||
       !["access", "refresh", "forgot-password"].includes(
         decoded.tokenType as string,
       )

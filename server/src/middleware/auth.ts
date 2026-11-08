@@ -31,6 +31,13 @@ export const requireAuth: RequestHandler = (req, res, next) => {
 };
 
 export const requireAdmin: RequestHandler = (req, res, next) => {
+  if (!req.userId || !req.userRole) {
+    res.status(HttpStatusCode.Unauthorized).json({
+      message: "Authentication required",
+    });
+    return;
+  }
+
   if (req.userRole !== "admin") {
     res.status(HttpStatusCode.Forbidden).json({
       message: "Admin access is required",
