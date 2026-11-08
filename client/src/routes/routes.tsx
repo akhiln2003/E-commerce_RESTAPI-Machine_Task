@@ -25,7 +25,16 @@ const UserManagement = lazy(
 const CategoryManagement = lazy(
   () => import("@/features/admin/pages/CategoryManagement"),
 );
+const ProductManagement = lazy(
+  () => import("@/features/admin/pages/ProductManagement"),
+);
+const OrderManagement = lazy(
+  () => import("@/features/admin/pages/OrderManagement"),
+);
+const Products = lazy(() => import("@/features/common/pages/Products"));
+const Orders = lazy(() => import("@/features/common/pages/Orders"));
 const Profile = lazy(() => import("@/features/common/pages/Profile"));
+const Home = lazy(() => import("@/features/common/pages/Home"));
 
 ////////////////////////--Admin side--/////////////////////
 
@@ -36,6 +45,16 @@ const routes = createBrowserRouter(
       path: UserUrls.home,
       element: <UserLayout />,
       children: [
+        {
+          index: true,
+          element: (
+            <UserProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Home />
+              </Suspense>
+            </UserProtected>
+          ),
+        },
         // ------------------User--------------
         {
           path: UserUrls.authenticate,
@@ -53,6 +72,26 @@ const routes = createBrowserRouter(
             <UserProtected>
               <Suspense fallback={<div>Loading....</div>}>
                 <Profile />
+              </Suspense>
+            </UserProtected>
+          ),
+        },
+        {
+          path: UserUrls.products,
+          element: (
+            <UserProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Products />
+              </Suspense>
+            </UserProtected>
+          ),
+        },
+        {
+          path: UserUrls.orders,
+          element: (
+            <UserProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Orders />
               </Suspense>
             </UserProtected>
           ),
@@ -75,6 +114,26 @@ const routes = createBrowserRouter(
             <AdminProtected>
               <Suspense fallback={<div>Loading....</div>}>
                 <CategoryManagement />
+              </Suspense>
+            </AdminProtected>
+          ),
+        },
+        {
+          path: AdminUrls.products,
+          element: (
+            <AdminProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <ProductManagement />
+              </Suspense>
+            </AdminProtected>
+          ),
+        },
+        {
+          path: AdminUrls.orders,
+          element: (
+            <AdminProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <OrderManagement />
               </Suspense>
             </AdminProtected>
           ),

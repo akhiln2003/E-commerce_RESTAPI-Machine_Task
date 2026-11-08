@@ -7,6 +7,13 @@ import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { categoryRouter } from "./routes/category.routes.js";
+import { adminProductRouter } from "./routes/product.routes.js";
+import { ListProductsController } from "./controllers/product.controller.js";
+import { validate } from "./middleware/validate.js";
+import { productListQueryDto } from "./dto/product.dto.js";
+import { asyncHandler } from "./utils/async-handler.js";
+import { orderRouter } from "./routes/order.routes.js";
+import { publicCategoryRouter } from "./routes/public-category.routes.js";
 import HttpStatusCode from "./utils/httpStatusCode.js";
 
 export const app = express();
@@ -31,6 +38,14 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin/categories", categoryRouter);
+app.use("/api/categories", publicCategoryRouter);
+app.use("/api/admin/products", adminProductRouter);
+app.get(
+  "/api/products",
+  validate(productListQueryDto, { target: "query" }),
+  asyncHandler(ListProductsController),
+);
+app.use("/api/orders", orderRouter);
 
 // 404 handler
 app.use((_req, res) => {

@@ -5,6 +5,8 @@ import type {
   ICategory,
   ICategoryTreeNode,
 } from "@/@types/interface/ICategory";
+import type { IProduct, ProductStatus } from "@/@types/interface/IProduct";
+import type { IOrder, OrderStatus } from "@/@types/interface/IOrder";
 
 interface CategoryListResponse {
   success: boolean;
@@ -19,6 +21,17 @@ interface CategoryTreeResponse {
 interface CategoryInput {
   name: string;
   parentId: string | null;
+}
+
+interface ProductInput {
+  name: string;
+  sku: string;
+  description: string;
+  price: number;
+  salePrice: number | null;
+  stock: number;
+  categoryId: string;
+  status: ProductStatus;
 }
 
 export const adminApi = createApi({
@@ -88,6 +101,58 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["Admin"],
     }),
+    fetchProducts: builder.query<
+      { products: IProduct[]; pagination: { page: number; totalPages: number } },
+      { page?: number; limit?: number; categoryId?: string }
+    >({
+      query: ({ page = 1, limit = 12, categoryId }) => ({
+        url: AdminApiEndPoints.products,
+        method: "GET",
+        params: { page, limit, categoryId },
+      }),
+      providesTags: ["Admin"],
+    }),
+    createProduct: builder.mutation<{ product: IProduct }, ProductInput>({
+      query: (data) => ({
+        url: AdminApiEndPoints.products,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: ["Admin"],
+    }),
+    updateProduct: builder.mutation<
+      { product: IProduct },
+      { productId: string; data: ProductInput }
+    >({
+      query: ({ productId, data }) => ({
+        url: `${AdminApiEndPoints.products}/${productId}`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: ["Admin"],
+    }),
+    deleteProduct: builder.mutation<{ success: boolean }, string>({
+      query: (productId) => ({
+        url: `${AdminApiEndPoints.products}/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Admin"],
+    }),
+    fetchOrders: builder.query<{ orders: IOrder[] }, void>({
+      query: () => ({ url: "/orders/admin", method: "GET" }),
+      providesTags: ["Admin"],
+    }),
+    updateOrderStatus: builder.mutation<
+      { order: IOrder },
+      { orderId: string; status: OrderStatus }
+    >({
+      query: ({ orderId, status }) => ({
+        url: `/orders/admin/${orderId}/status`,
+        method: "PATCH",
+        data: { status },
+      }),
+      invalidatesTags: ["Admin"],
+    }),
   }),
 });
 
@@ -99,4 +164,10 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useFetchProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useFetchOrdersQuery,
+  useUpdateOrderStatusMutation,
 } = adminApi;
