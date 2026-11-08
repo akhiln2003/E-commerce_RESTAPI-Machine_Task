@@ -1,10 +1,17 @@
-// import { getErrorMessage } from "@/utils/errorHandler";
+import { getErrorMessage } from "@/utils/errorHandler";
+import { useSignInMutation } from "@/services/apis/AuthApis";
 import type { SignInValues } from "../@types/SignInValues";
 import { AuthForm } from "./Authform";
 import { TextLink } from "./Textlink";
-// import { showErrorToast } from "@/components/ToastProvider/toast";
-// import { Navigate } from "react-router-dom";
-// import { UserUrls } from "@/@types/urlEnums/UserUrls";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "@/components/ToastProvider/toast";
+import { useNavigate } from "react-router-dom";
+import { UserUrls } from "@/@types/urlEnums/UserUrls";
+import { useDispatch } from "react-redux";
+import { addUser } from "@/redux/slices/userSlice";
+import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 
 interface SignInProps {
   onSwitch: () => void;
@@ -12,42 +19,50 @@ interface SignInProps {
 }
 
 export function SignIn({ onSwitch, onSubmit = () => {} }: SignInProps) {
+  const [signIn] = useSignInMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  onSubmit = async (values: SignInValues) => {
+    try {
+      const { email, password } = values;
 
-  // onSubmit = async (values: SignUpValues) => {
-  //   try {
-  //     const { name, email, password } = values;
+      const response = await signIn({
+        email,
+        password,
+      });
+      console.log("SignIn response:", response);
 
-  //     const response = await signUp({
-  //       name,
-  //       email,
-  //       password,
-  //     });
-  //     const { user } = response.data;
+      const { user } = response.data;
 
-  //     if (response.data && user) {
-  //       showSuccessToast({
-  //         title: "Signup successful!",
-  //         description: user.email + " " + response.data.message,
-  //       });
-  //       dispatch(addUser(user));
+      if (response.data && user) {
+        showSuccessToast({
+          title: "SignIn successful!",
+          description: `${user.email} ${response.data.message}`,
+        });
 
-  //       Navigate(UserUrls.home);
-  //     } else if (response.error) {
-  //       showErrorToast({
-  //         title: "Signup failed!",
-  //         description: getErrorMessage(response.error),
-  //       });
-  //     }
-  //   } catch (error: unknown) {
-  //     console.error("Signup error:", error);
+        dispatch(addUser(user));
 
-  //     showErrorToast({
-  //       title: "Signup failed!",
-  //       description: getErrorMessage(error),
-  //     });
-  //   }
-  // };
+        const navigateUrl =
+          user.role === "admin" ? AdminUrls.profile : UserUrls.home;
+
+        navigate(navigateUrl);
+      } else if (response.error) {
+        showErrorToast({
+          title: "SignIn failed!",
+          description: getErrorMessage(response.error),
+        });
+      }
+    } catch (error: unknown) {
+      console.log("Error during sign-in:", error);
+      console.error("Signin error:", error);
+
+      showErrorToast({
+        title: "Signin failed!",
+        description: getErrorMessage(error),
+      });
+    }
+  };
 
   return (
     <AuthForm<"email" | "password">

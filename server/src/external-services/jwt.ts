@@ -17,11 +17,16 @@ export class JwtService {
   }
 
   // Generate access token
-  generateAccessToken(user: { id: string; email: string }): string {
+  generateAccessToken(user: {
+    id: string;
+    email: string;
+    role: "user" | "admin";
+  }): string {
     const payload: ITokenPayload = {
       userId: user.id,
       email: user.email,
       tokenType: "access",
+      role: user.role,
     };
 
     const options: SignOptions = {
@@ -32,11 +37,16 @@ export class JwtService {
   }
 
   // Generate refresh token
-  generateRefreshToken(user: { id: string; email: string }): string {
+  generateRefreshToken(user: {
+    id: string;
+    email: string;
+    role: "user" | "admin";
+  }): string {
     const payload: ITokenPayload = {
       userId: user.id,
       email: user.email,
       tokenType: "refresh",
+      role: user.role,
     };
 
     const options: SignOptions = {
@@ -48,7 +58,16 @@ export class JwtService {
 
   // Verify token
   verifyToken(token: string, secret: string): ITokenPayload {
-    const decoded = JWT.verify(token, secret);
+    let decoded: string | JWT.JwtPayload;
+
+    try {
+      decoded = JWT.verify(token, secret);
+    } catch {
+      throw new AppError(
+        HttpStatusCode.Unauthorized,
+        "Invalid or expired token. Please sign in again.",
+      );
+    }
 
     if (
       typeof decoded === "string" ||
@@ -58,13 +77,14 @@ export class JwtService {
         decoded.tokenType as string,
       )
     ) {
-      throw new AppError(HttpStatusCode.BadRequest, "Invalid token payload");
+      throw new AppError(HttpStatusCode.Unauthorized, "Invalid token payload");
     }
 
     return {
       userId: decoded.userId,
       email: decoded.email,
       tokenType: decoded.tokenType as ITokenPayload["tokenType"],
+      role: decoded.role as ITokenPayload["role"],
     };
   }
 

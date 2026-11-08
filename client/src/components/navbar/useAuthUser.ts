@@ -8,14 +8,14 @@ import { useSignOutMutation } from "@/services/apis/AuthApis";
 import { IAxiosResponse } from "@/@types/interface/IAxiosResponse";
 
 // Pass a role so an admin navbar never shows a customer's session (and vice versa)
-export function useAuthUser(role?: string) {
+export function useAuthUser(role?: "user" | "admin") {
   const dbUser = useGetUser();
   const dispatch = useDispatch();
   const [signOut] = useSignOutMutation();
 
   const isMatch = dbUser && (!role || dbUser.role === role);
   const user: NavbarUser | null = isMatch
-    ? { id: dbUser.id, name: dbUser.name, email: dbUser.email }
+    ? { id: dbUser.id, name: dbUser.name, email: dbUser.email , role: dbUser.role}
     : null;
 
   const logout = async () => {

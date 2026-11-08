@@ -1,8 +1,7 @@
 export enum AdminUrls {
   home = "/admin",
-  signIn = "/admin/sign-in",
   profile = "/admin/profile",
-  users = "/admin/users",
+  userManagement = "/admin/user-management",
   categories = "/admin/categories",
   products = "/admin/products",
   orders = "/admin/orders",

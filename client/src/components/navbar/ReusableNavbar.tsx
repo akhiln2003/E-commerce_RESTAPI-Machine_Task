@@ -11,6 +11,7 @@ export interface NavbarUser {
   id: string;
   name: string;
   email: string;
+  role: "user" | "admin";
 }
 
 export interface ReusableNavbarProps {

@@ -12,6 +12,7 @@ import { UserUrls } from "@/@types/urlEnums/UserUrls";
 import { useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "@/services/apis/AuthApis";
 import { IAxiosResponse } from "@/@types/interface/IAxiosResponse";
+import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 
 interface SignUpProps {
   onSwitch: () => void;
@@ -41,7 +42,10 @@ export function SignUp({ onSwitch, onSubmit = () => {} }: SignUpProps) {
         });
         dispatch(addUser(user));
 
-        navigate(UserUrls.home);
+        const navigateUrl =
+          user.role === "admin" ? AdminUrls.profile : UserUrls.home;
+
+        navigate(navigateUrl);
       } else if (response.error) {
         showErrorToast({
           title: "Signup failed!",

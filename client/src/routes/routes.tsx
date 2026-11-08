@@ -5,10 +5,9 @@ import { lazy, Suspense } from "react";
 import UserLayout from "../layout/UserLayout";
 import ErrorPage404 from "../components/error/ErrorPage404";
 import ErrorPage500 from "../components/error/ErrorPage500";
-import AdminLayout from "../layout/AdminLayout";
 import { UserUrls } from "@/@types/urlEnums/UserUrls";
-import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 import RedirectSignInUser from "./protected/RedirectSignInUser";
+import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 
 ////////////////////////--User side--/////////////////////
 
@@ -20,10 +19,7 @@ import RedirectSignInUser from "./protected/RedirectSignInUser";
 
 ////////////////////////--User side--///////////////////////
 
-
 const Authpages = lazy(() => import("@/features/auth/pages/Authpages"));
-
-
 
 ////////////////////////--Admin side--/////////////////////
 
@@ -34,8 +30,18 @@ const routes = createBrowserRouter(
       path: UserUrls.home,
       element: <UserLayout />,
       children: [
-         {
+        {
           path: UserUrls.authenticate,
+          element: (
+            <RedirectSignInUser>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Authpages />
+              </Suspense>
+            </RedirectSignInUser>
+          ),
+        },
+        {
+          path: AdminUrls.userManagement,
           element: (
             <RedirectSignInUser>
               <Suspense fallback={<div>Loading....</div>}>
@@ -49,15 +55,6 @@ const routes = createBrowserRouter(
 
     ////////////////--User end--///////////////////
 
-    /////////////////--Admin--//////////////////////
-
-    {
-      path: AdminUrls.home,
-      element: <AdminLayout />,
-      children: [],
-    },
-
-    ////////////////--Admin end--///////////////////
     ///////////////--Common start--///////////////////
 
     { path: "/servererror", element: <ErrorPage500 /> },

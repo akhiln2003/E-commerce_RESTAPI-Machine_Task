@@ -19,17 +19,20 @@ export const SignUpController: RequestHandler<
       name,
       email,
       password,
+      role: "user", // Default role for new users
     });
 
     // Generate tokens
     const accessToken = jwtService.generateAccessToken({
       id: user.id,
       email: user.email,
+      role: user.role,
     });
 
     const refreshToken = jwtService.generateRefreshToken({
       id: user.id,
       email: user.email,
+      role: user.role,
     });
 
     // Set HTTP-only cookies
