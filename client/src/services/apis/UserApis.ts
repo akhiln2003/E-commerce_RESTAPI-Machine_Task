@@ -1,18 +1,24 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../axios/axiosBaseQuery";
 import { UserApiEndPoints } from "../endPoints/UserEndPoints";
+import type { IUserDB } from "@/@types/interface/IDataBase";
+
+interface ProfileResponse {
+  success: boolean;
+  user: IUserDB;
+}
 
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: axiosBaseQuery(),
   tagTypes: ["User"],
   endpoints: (builder) => ({
-    // Fetch user profile
-    fetchUserProfile: builder.mutation({
-      query: (id: string) => ({
-        url: `${UserApiEndPoints.fetchProfile}/${id}`,
+    fetchUserProfile: builder.query<ProfileResponse, void>({
+      query: () => ({
+        url: UserApiEndPoints.fetchProfile,
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
 
     /////////////////////////////////////////////////////////////////////////
@@ -20,4 +26,4 @@ export const userApi = createApi({
 });
 
 // Export the hook directly from the API slice
-export const { useFetchUserProfileMutation } = userApi;
+export const { useFetchUserProfileQuery } = userApi;

@@ -8,6 +8,7 @@ import ErrorPage404 from "../components/error/ErrorPage404";
 import ErrorPage500 from "../components/error/ErrorPage500";
 import { UserUrls } from "@/@types/urlEnums/UserUrls";
 import RedirectSignInUser from "./protected/RedirectSignInUser";
+import UserProtected from "./protected/UserProtected";
 import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 
 ////////////////////////--User side--/////////////////////
@@ -21,6 +22,7 @@ const Authpages = lazy(() => import("@/features/auth/pages/Authpages"));
 const UserManagement = lazy(
   () => import("@/features/admin/pages/UserManagement"),
 );
+const Profile = lazy(() => import("@/features/common/pages/Profile"));
 
 ////////////////////////--Admin side--/////////////////////
 
@@ -42,8 +44,28 @@ const routes = createBrowserRouter(
             </RedirectSignInUser>
           ),
         },
+        {
+          path: UserUrls.profile,
+          element: (
+            <UserProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Profile />
+              </Suspense>
+            </UserProtected>
+          ),
+        },
         // ------------------User End-----------
         // ------------------Admin--------------
+        {
+          path: AdminUrls.profile,
+          element: (
+            <AdminProtected>
+              <Suspense fallback={<div>Loading....</div>}>
+                <Profile />
+              </Suspense>
+            </AdminProtected>
+          ),
+        },
         {
           path: AdminUrls.userManagement,
           element: (

@@ -95,9 +95,20 @@ const setUserBlocked = async (userId: string, isBlocked: boolean) => {
   return user;
 };
 
+const getProfile = async (userId: string) => {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new AppError(HttpStatusCode.NotFound, "User not found");
+  }
+
+  return user;
+};
+
 export const authService = {
   signUp,
   signIn,
   listUsers,
   setUserBlocked,
+  getProfile,
 };

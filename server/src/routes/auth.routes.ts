@@ -9,6 +9,7 @@ import { SignUpController } from "../controllers/auth/sign-up.controller.js";
 import { SignOutController } from "../controllers/auth/sign-out.controller.js";
 import { SignInController } from "../controllers/auth/sign-in.controller.js";
 import { TokenGenController } from "../controllers/auth/token-gen.controller.js";
+import { ProfileController } from "../controllers/auth/profile.controller.js";
 import {
   FetchUsersController,
   UpdateUserBlockController,
@@ -32,6 +33,12 @@ authRouter.post(
 authRouter.post(
   "/token-gen",
   asyncHandler(TokenGenController),
+);
+
+authRouter.get(
+  "/profile",
+  requireAuth,
+  asyncHandler(ProfileController),
 );
 
 authRouter.get(
