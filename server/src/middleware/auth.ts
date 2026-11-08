@@ -4,8 +4,11 @@ import HttpStatusCode from "../utils/httpStatusCode.js";
 
 export const requireAuth: RequestHandler = (req, res, next) => {
   const header = req.header("authorization");
+  const token = header?.startsWith("Bearer ")
+    ? header.slice(7)
+    : req.cookies.userAccessToken;
 
-  if (!header?.startsWith("Bearer ")) {
+  if (!token) {
     res.status(HttpStatusCode.Unauthorized).json({
       message: "Authentication required",
     });
@@ -13,12 +16,11 @@ export const requireAuth: RequestHandler = (req, res, next) => {
   }
 
   try {
-    const token = header.slice(7);
-
-    const { userId, email } = jwtService.verifyAccessToken(token);
+    const { userId, email, role } = jwtService.verifyAccessToken(token);
 
     req.userId = userId;
     req.emailId = email;
+    req.userRole = role;
 
     next();
   } catch {
@@ -26,4 +28,15 @@ export const requireAuth: RequestHandler = (req, res, next) => {
       message: "Invalid or expired access token",
     });
   }
+};
+
+export const requireAdmin: RequestHandler = (req, res, next) => {
+  if (req.userRole !== "admin") {
+    res.status(HttpStatusCode.Forbidden).json({
+      message: "Admin access is required",
+    });
+    return;
+  }
+
+  next();
 };

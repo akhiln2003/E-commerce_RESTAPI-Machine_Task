@@ -7,10 +7,26 @@ export const adminApi = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Admin"],
   endpoints: (builder) => ({
-    ///////////////////////////////--User--///////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////
+    fetchUsers: builder.mutation({
+      query: ({ page, limit = 12 }: { page: number; limit?: number }) => ({
+        url: `${AdminApiEndPoints.fetchUsers}?page=${page}&limit=${limit}`,
+        method: "GET",
+      }),
+    }),
+    updateUserBlock: builder.mutation({
+      query: ({
+        userId,
+        isBlocked,
+      }: {
+        userId: string;
+        isBlocked: boolean;
+      }) => ({
+        url: `${AdminApiEndPoints.updateUserBlock}/${userId}/block`,
+        method: "PATCH",
+        data: { isBlocked },
+      }),
+    }),
   }),
 });
 
-// Export the hook directly from the API slice
-export const {} = adminApi;
+export const { useFetchUsersMutation, useUpdateUserBlockMutation } = adminApi;

@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../axios/axiosBaseQuery";
-import { AdminApiEndPoints } from "../endPoints/AdminEndPoints";
 import { INewUserData, ISignInData } from "@/@types/interface/IUserApisQuery";
 import { CommonApiEndPoints } from "../endPoints/CommonEndPoints";
 
@@ -36,17 +35,6 @@ export const authApi = createApi({
     }),
 
     ///////////////////////////////--Common end--//////////////////////////
-    ///////////////////////////////--Admin--////////////////////////////////
-
-    // Fetch users
-    fetchUsers: builder.mutation({
-      query: ({ page, searchData }) => ({
-        url: `${AdminApiEndPoints.fetchUsers}?page=${page}&&searchData=${searchData}`,
-        method: "GET",
-      }),
-    }),
-
-    ///////////////////////////////--Admin end--///////////////////////////
   }),
 });
 
@@ -57,6 +45,4 @@ export const {
   useSignUpMutation,
   useSignOutMutation,
 
-  // Admin
-  useFetchUsersMutation,
 } = authApi;

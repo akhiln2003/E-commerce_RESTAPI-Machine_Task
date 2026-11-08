@@ -13,7 +13,7 @@ const adminLinks: NavLinkItem[] = [
   // { name: "Dashboard", url: AdminUrls.dashboard, end: true },
   { name: "Products", url: AdminUrls.products },
   { name: "Orders", url: AdminUrls.orders },
-  // { name: "Customers", url: AdminUrls.customers },
+  { name: "Users", url: AdminUrls.userManagement },
 ];
 
 function UserNavbar() {

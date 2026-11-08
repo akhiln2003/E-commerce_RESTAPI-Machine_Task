@@ -31,11 +31,16 @@ export function SignIn({ onSwitch, onSubmit = () => {} }: SignInProps) {
         email,
         password,
       });
-      console.log("SignIn response:", response);
 
-      const { user } = response.data;
-
-      if (response.data && user) {
+      if (response.data) {
+        const { user } = response.data;
+        if (!user) {
+          showErrorToast({
+            title: "SignIn failed!",
+            description: "User data is missing in the response.",
+          });
+          return;
+        }
         showSuccessToast({
           title: "SignIn successful!",
           description: `${user.email} ${response.data.message}`,
@@ -47,14 +52,13 @@ export function SignIn({ onSwitch, onSubmit = () => {} }: SignInProps) {
           user.role === "admin" ? AdminUrls.profile : UserUrls.home;
 
         navigate(navigateUrl);
-      } else if (response.error) {
+      } else {
         showErrorToast({
           title: "SignIn failed!",
           description: getErrorMessage(response.error),
         });
       }
     } catch (error: unknown) {
-      console.log("Error during sign-in:", error);
       console.error("Signin error:", error);
 
       showErrorToast({

@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 // import AdminProtected from "./protected/AdminProtected";
 // import UserProtected from "./protected/UserProtected";
 import UserLayout from "../layout/UserLayout";
+import AdminProtected from "./protected/AdminProtected";
 import ErrorPage404 from "../components/error/ErrorPage404";
 import ErrorPage500 from "../components/error/ErrorPage500";
 import { UserUrls } from "@/@types/urlEnums/UserUrls";
@@ -11,15 +12,15 @@ import { AdminUrls } from "@/@types/urlEnums/AdminUrl";
 
 ////////////////////////--User side--/////////////////////
 
-////////////////////////--User side--///////////////////////
-
-////////////////////////--Admin side--/////////////////////
-
-////////////////////////--Admin side--/////////////////////
-
-////////////////////////--User side--///////////////////////
-
 const Authpages = lazy(() => import("@/features/auth/pages/Authpages"));
+
+////////////////////////--User side--/////////////////////
+
+////////////////////////--Admin side--///////////////////////
+
+const UserManagement = lazy(
+  () => import("@/features/admin/pages/UserManagement"),
+);
 
 ////////////////////////--Admin side--/////////////////////
 
@@ -30,6 +31,7 @@ const routes = createBrowserRouter(
       path: UserUrls.home,
       element: <UserLayout />,
       children: [
+        // ------------------User--------------
         {
           path: UserUrls.authenticate,
           element: (
@@ -40,16 +42,17 @@ const routes = createBrowserRouter(
             </RedirectSignInUser>
           ),
         },
+        // ------------------User End-----------
+        // ------------------Admin--------------
         {
           path: AdminUrls.userManagement,
           element: (
-            <RedirectSignInUser>
-              <Suspense fallback={<div>Loading....</div>}>
-                <Authpages />
-              </Suspense>
-            </RedirectSignInUser>
+            <AdminProtected>
+              <UserManagement />
+            </AdminProtected>
           ),
         },
+        // ------------------Admin End-----------
       ],
     },
 

@@ -3,6 +3,7 @@ declare global {
     interface Request {
       userId?: string
       emailId?: string
+      userRole?: "user" | "admin"
     }
   }
 }

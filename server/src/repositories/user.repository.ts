@@ -29,6 +29,28 @@ const findAll = async () => {
   return UserModel.find().exec();
 };
 
+const findPaginated = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+  const [users, total] = await Promise.all([
+    UserModel.find({ role: "user" })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec(),
+    UserModel.countDocuments({ role: "user" }).exec(),
+  ]);
+
+  return { users, total };
+};
+
+const updateBlockedStatus = async (userId: string, isBlocked: boolean) => {
+  return UserModel.findOneAndUpdate(
+    { _id: userId, role: "user" },
+    { $set: { isBlocked } },
+    { new: true, runValidators: true },
+  ).exec();
+};
+
 const updateById = async (
   userId: string,
   data: Partial<CreateUserData>,
@@ -53,6 +75,8 @@ export const userRepository = {
   findByEmailWithPassword,
   findById,
   findAll,
+  findPaginated,
+  updateBlockedStatus,
   updateById,
   deleteById,
 };

@@ -71,7 +71,33 @@ const signIn = async (data: SignInData) => {
   };
 };
 
+const listUsers = async (page: number, limit: number) => {
+  const { users, total } = await userRepository.findPaginated(page, limit);
+
+  return {
+    users,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+const setUserBlocked = async (userId: string, isBlocked: boolean) => {
+  const user = await userRepository.updateBlockedStatus(userId, isBlocked);
+
+  if (!user) {
+    throw new AppError(HttpStatusCode.NotFound, "User not found");
+  }
+
+  return user;
+};
+
 export const authService = {
   signUp,
   signIn,
+  listUsers,
+  setUserBlocked,
 };
