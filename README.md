@@ -208,10 +208,4 @@ cd client
 npm run build
 ```
 
-## Security notes
 
-- Backend authorization never trusts a role sent by the frontend.
-- Admin access is derived from the verified JWT payload.
-- Access and refresh tokens are stored in HTTP-only cookies.
-- Product prices, totals, and stock changes are server-owned.
-- Use strong unique JWT secrets in production.
